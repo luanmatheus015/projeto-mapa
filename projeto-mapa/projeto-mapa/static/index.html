@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa de Computadores</title>
+<style>
+:root{--bg:#F5F4F4;--card:#fff;--ink:#2E2323;--mut:#7A6B6B;--line:#D8D3D3;--acc:#A94F4F;--accbg:#FAF1F1;--pc:#FAF1F1;--pcl:#D29C9C;--hit:#fff3c4;--net:#5F6B7A;--r0:#FAF1F1;--grad:linear-gradient(135deg,#B96A6A,#9C4545);--hdr:linear-gradient(135deg,#FAF1F1,#E2BDBD 70%,#D29C9C);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1E1A1A;--card:#2A2424;--ink:#F1E9E9;--mut:#B5A6A6;--line:#4A4040;--acc:#E2A0A0;--accbg:#4A2C2C;--pc:#3A2828;--pcl:#8A5A5A;--hit:#5a4a10;--net:#9FB0C4;--r0:#352B2B;--grad:linear-gradient(135deg,#A85C5C,#7F3636);--hdr:linear-gradient(135deg,#3A2A2A,#563434);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1E1A1A;--card:#2A2424;--ink:#F1E9E9;--mut:#B5A6A6;--line:#4A4040;--acc:#E2A0A0;--accbg:#4A2C2C;--pc:#3A2828;--pcl:#8A5A5A;--hit:#5a4a10;--net:#9FB0C4;--r0:#352B2B;--grad:linear-gradient(135deg,#A85C5C,#7F3636);--hdr:linear-gradient(135deg,#3A2A2A,#563434);color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;padding:16px}
+h1{font-size:20px;margin:0 0 2px}.sub{color:var(--mut);margin:0 0 14px;font-size:13px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+input,button{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 11px}
+button{cursor:pointer}button:hover{border-color:var(--acc)}button.p{background:var(--grad);border-color:transparent;color:#fff}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
+.tab{white-space:nowrap}.tab.on{background:var(--grad);border-color:transparent;color:#fff;font-weight:600}.tab.on small{color:#f5e6e6}
+.tab small{color:var(--mut);margin-left:4px}
+.plan{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;border:2px solid var(--line);border-radius:12px;padding:12px;background:var(--card)}
+.room{border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:150px;background:linear-gradient(180deg,var(--r0),var(--bg))}
+.rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:6px}
+.rh b{cursor:pointer}.rh span{color:var(--mut);font-size:12px}
+.pcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px}
+.pc{background:var(--pc);border:1px solid var(--pcl);border-radius:8px;padding:6px;text-align:center;cursor:pointer;font-size:12px;overflow:hidden}
+.pc .i{font-size:20px;line-height:1}.pc .w{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pc .t{color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc.hit{background:var(--hit);outline:2px solid var(--acc)}
+.add{margin-top:8px;width:100%;border-style:dashed;color:var(--mut);font-size:13px}
+.empty{color:var(--mut);font-size:12px}
+#res{margin:0 0 12px;display:flex;gap:6px;flex-wrap:wrap}
+select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 11px}
+.room{cursor:pointer}.room:hover{border-color:var(--acc)}.hint{margin-top:8px;color:var(--acc);font-size:13px;text-align:center}
+#ov{position:fixed;inset:0;z-index:5;background:var(--bg);overflow:auto;padding:max(16px,env(safe-area-inset-top,0px)) 16px max(16px,env(safe-area-inset-bottom,0px))}
+#ov[hidden]{display:none}.ovin{max-width:900px;margin:0 auto}
+.ovh{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.addrow{display:flex;gap:8px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px}
+.addrow input{flex:1;min-width:140px}
+.sec{font-weight:600;margin:16px 0 6px}
+.row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:6px}
+.row .i{font-size:22px}.row .tx{flex:1;min-width:0;cursor:pointer}.row .tx b{display:block;overflow:hidden;text-overflow:ellipsis}.row .tx span{color:var(--mut);font-size:12px}.row button{color:#c0392b}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.dev{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 8px 8px;text-align:center;min-width:0}
+.dev .tx{cursor:pointer}.dev svg{width:54px;height:54px;color:var(--acc)}.dev svg.net{color:var(--net)}
+.dev b{display:block;margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dev span{display:block;color:var(--mut);font-size:12px;min-height:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dev button{margin-top:6px;font-size:12px;padding:3px 10px;color:#c0392b}
+.pc svg{width:30px;height:30px;color:var(--acc)}.pc svg.net{color:var(--net)}
+#dv,#hv{position:fixed;inset:0;z-index:6;background:var(--bg);overflow:auto;padding:max(16px,env(safe-area-inset-top,0px)) 16px max(16px,env(safe-area-inset-bottom,0px))}#dv[hidden],#hv[hidden]{display:none}
+.dh{display:flex;gap:14px;align-items:center;margin-bottom:14px}.dh svg{width:72px;height:72px;color:var(--acc)}.dh svg.net{color:var(--net)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}.card .sec{margin-top:0}
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}.fg label{display:block;font-size:12px;color:var(--mut);margin-bottom:3px}.fg input,.fg select{width:100%}
+.chip{display:inline-flex;gap:6px;align-items:center;background:var(--accbg);border-radius:16px;padding:4px 6px 4px 12px;margin:0 6px 6px 0}.chip button{border:0;background:none;padding:0 6px;color:var(--mut)}
+.kv{display:grid;grid-template-columns:1fr 1.5fr auto;gap:8px;margin-bottom:6px}.kv input{min-width:0}
+.info{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px 16px}.ir span{display:block;font-size:12px;color:var(--mut)}.ir b{font-weight:600;word-break:break-word}
+.dev button[data-edit]{color:var(--acc)}
+.rb{display:inline-block;margin-left:10px;padding:4px 10px;border-radius:8px;background:var(--grad);color:#fff;text-decoration:none;font-size:13px;font-weight:600}
+.top{padding:12px 16px;border-radius:12px;background:var(--hdr)}
+.warn{background:#FFF3C4;color:#5a4300;border:1px solid #E0C060;border-radius:10px;padding:8px 12px;margin-bottom:12px;font-size:13px}.warn button{margin:2px 4px 2px 0;font-size:12px;padding:2px 8px;color:#5a4300;background:#fff}
+.st{display:flex;align-items:center;justify-content:center;gap:5px;font-size:12px;color:var(--mut)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%}.st .dot{flex:none}
+.pc{position:relative}.pc .dot{position:absolute;top:5px;right:5px}.off{opacity:.55}
+.hi{border-bottom:1px solid var(--line);padding:8px 0;font-size:13px}.hi small{color:var(--mut)}
+.oc{border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px}.oc input{width:100%;margin-top:6px}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;background:var(--accbg);color:var(--acc)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}.kpi span{display:block;font-size:12px;color:var(--mut)}.kpi b{font-size:26px}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:12px}.dg .card{margin-bottom:0}.col{display:flex;flex-direction:column;gap:12px}
+.br{display:flex;align-items:center;gap:8px;font-size:13px;margin:6px 0;width:100%;border:0;background:none;padding:0;color:var(--ink);text-align:left}button.br{cursor:pointer}
+.br span{width:74px;color:var(--mut);flex:none}.br .t{flex:1;height:10px;border-radius:5px;background:var(--line)}.br .t i{display:block;height:10px;border-radius:5px;background:var(--grad)}.br em{width:28px;text-align:right;font-style:normal;flex:none}
+.al{display:flex;gap:8px;align-items:flex-start;font-size:13px;margin:7px 0;width:100%;text-align:left;border:0;background:none;padding:0;cursor:pointer;color:var(--ink)}.al .dot{margin-top:5px;flex:none}
+.avisos{border-left:4px solid var(--acc)}
+#m{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+#m .box{background:var(--card);border-radius:12px;padding:16px;width:100%;max-width:340px}
+#m label{display:block;font-size:12px;color:var(--mut);margin:10px 0 3px}#m input{width:100%}
+#m .act{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+</style></head><body>
+<div class="bar top"><h1 style="flex:1;margin:0">Mapa de Computadores</h1><button id="hist">Histórico</button><button id="sair">Sair</button></div>
+<p class="sub">Protótipo — selecione o andar e clique em uma sala para abrir a lista de computadores e dispositivos de rede. Os dados ficam salvos no servidor.</p>
+<div class="bar">
+<input id="q" placeholder="Buscar por nome, IP, Anydesk, modelo, usuário, sala, status…" style="flex:1;min-width:200px">
+<button id="exp">Exportar</button><button id="imp">Importar</button><button id="clr">Limpar tudo</button>
+<input type="file" id="file" accept=".json" hidden>
+</div>
+<div id="dupb"></div>
+<div id="res"></div>
+<div class="bar" id="nav"><button class="tab" data-view="dash">Painel</button><button class="tab" data-view="map">Mapa dos andares</button></div>
+<div id="dash"></div>
+<div id="mapv"><div class="tabs" id="tabs"></div>
+<div class="bar"><b id="ft"></b><button id="addroom" style="margin-left:auto">+ Sala</button></div>
+<div class="plan" id="plan"></div></div>
+<div id="ov" hidden><div class="ovin">
+<div class="ovh"><button id="ovx">← Voltar ao andar</button><div><b id="ovt" style="font-size:18px"></b><div class="sub" id="ovs" style="margin:0"></div></div><span style="flex:1"></span><button id="ovren">Editar sala</button></div>
+<div class="addrow"><select id="ntype"></select><input id="nsearch" placeholder="Pesquisar usuário, nome do computador ou ID Anydesk desta sala…"><button class="p" id="nadd">+ Adicionar</button></div><datalist id="setores"></datalist>
+<div id="ovl"></div>
+</div></div>
+<div id="dv" hidden><div class="ovin">
+<div class="ovh"><button id="dvx">← Voltar à sala</button><span style="flex:1"></span><button id="dvedit" class="p">Editar informações</button> <button id="dvdel" style="color:#c0392b">Remover dispositivo</button></div>
+<div id="dvb"></div>
+</div></div>
+<div id="hv" hidden><div class="ovin"><div class="ovh"><button id="hvx">← Voltar</button><b style="font-size:18px">Histórico de alterações</b></div><div id="hvb"></div></div></div>
+<div id="m"><div class="box"><b id="mt"></b><div id="mf"></div><div class="act"><button id="md">Excluir</button><button id="mc">Cancelar</button><button class="p" id="mo">Salvar</button></div></div></div>
+<script>
+const NAMES=["Térreo","1º andar","2º andar","3º andar","4º andar","5º andar","6º andar","7º andar"];
+const KEY="mapa_pcs_v1";let S,cur=0,q="";
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function fresh(){const f=NAMES.map((n,i)=>{const p=i===0?"T":i;const rooms=[];
+ if(i===0)rooms.push({id:uid(),name:"Recepção",pcs:[]});
+ for(let k=1;k<=(i===0?5:6);k++)rooms.push({id:uid(),name:"Sala "+p+"0"+k,pcs:[]});return rooms});
+ f[1][0].pcs.push({id:uid(),worker:"Maria Souza (exemplo)",tag:"PC-0001"},{id:uid(),worker:"João Lima (exemplo)",tag:"PC-0002"});
+ return{floors:f}}
+let _t=null,_ro=false;
+function save(){if(_ro)return;clearTimeout(_t);_t=setTimeout(async()=>{try{const r=await fetch('/api/state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(S)});if(r.status===401)location.href='/login.html'}catch(e){}},400)}
+async function load(){try{const r=await fetch('/api/state');if(r.status===401){location.href='/login.html';return}if(!r.ok)throw 0;const d=await r.json();S=(d&&d.floors&&d.floors.length===8)?d:fresh();try{ME=(await(await fetch("/api/me")).json()).user||""}catch(e){}return}catch(e){}
+ _ro=true;S=fresh();document.body.insertAdjacentHTML('afterbegin','<p style="color:#c0392b"><b>Erro ao carregar do servidor.</b> Nada será salvo. Recarregue a página.</p>')}
+const ST={"Ativo":"#3B8F5A","Em manutenção":"#D9962B","Em estoque":"#5F6B7A","Desativado":"#9C4545"};
+const stOf=p=>ST[p.status]?p.status:"Ativo",stDot=p=>`<i class="dot" style="background:${ST[stOf(p)]}"></i>`;
+const nOpen=p=>(p.occ||[]).filter(o=>o.situacao!=="Resolvida").length;
+const nrm=s=>String(s??"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const hay=p=>nrm([p.worker,p.tag,p.setor,p.type||"Computador",stOf(p),...Object.values(p.cfg||{}),...(p.users||[]),...(p.extra||[]).flatMap(x=>[x.k,x.v]),...(p.occ||[]).flatMap(o=>[o.problema,o.solucao,o.situacao,o.by])].join(" "));
+const match=p=>q&&hay(p).includes(q);
+let ME="";
+const isIp=v=>/^\d{1,3}(\.\d{1,3}){3}$/.test(v);
+const ips=p=>new Set([p.tag,(p.cfg||{}).ip].map(x=>String(x||"").trim()).filter(isIp));
+const dnm=x=>esc(x.p.worker||x.p.type||"Dispositivo")+" ("+esc(x.r.name)+", "+NAMES[x.fi]+")";
+function dups(){const m={};S.floors.forEach((rs,fi)=>rs.forEach(r=>r.pcs.forEach(p=>{ips(p).forEach(ip=>{(m[ip]=m[ip]||[]).push({fi,r,p})})})));return Object.entries(m).filter(([,a])=>a.length>1)}
+function renderDup(){const d=dups(),b=document.getElementById("dupb");b.innerHTML=d.length?`<div class="warn"><b>⚠ ${d.length} IP(s) duplicado(s)</b>${d.slice(0,5).map(([ip,a])=>`<div>${esc(ip)} → ${a.map(x=>`<button data-hit="${x.fi}|${x.r.id}|${x.p.id}">${dnm(x)}</button>`).join("")}</div>`).join("")}${d.length>5?"<div>…e mais "+(d.length-5)+"</div>":""}</div>`:""}
+function dupWarn(p){const mine=ips(p);if(p===draft)return [...mine].map(ip=>{const a=[];S.floors.forEach((rs,fi)=>rs.forEach(r=>r.pcs.forEach(q=>{if(ips(q).has(ip))a.push({fi,r,p:q})})));return a.length?`<div class="warn">⚠ IP duplicado: ${esc(ip)} já usado em ${a.map(dnm).join(", ")}</div>`:""}).join("");return dups().filter(([ip])=>mine.has(ip)).map(([ip,a])=>`<div class="warn">⚠ IP duplicado: ${esc(ip)} também em ${a.filter(x=>x.p!==p).map(dnm).join(", ")}</div>`).join("")}
+const fmt=t=>{try{return new Date(t).toLocaleString("pt-BR")}catch(e){return t||""}},fmtS=t=>fmt(String(t).replace(" ","T")+"Z");
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1),cut=s=>s.length>120?s.slice(0,117)+"…":s;
+function htxt(h,g){const t=h.acao==="alterado"?`${h.rotulo}: ${h.antes||"vazio"} → ${h.depois||"vazio"}`:h.acao==="sala renomeada"?`Sala renomeada: ${h.antes} → ${h.depois}`:cap(h.acao)+(h.acao==="alteração em massa"?" ("+h.depois+")":h.dev_nome?": "+h.dev_nome:h.sala?": "+h.sala:"");
+ return `<div class="hi"><small>${fmtS(h.ts)} · ${esc(h.usuario||"")}${g&&h.andar!=null?" · "+NAMES[h.andar]+(h.sala?", "+esc(h.sala):""):""}${g&&h.dev_nome&&h.acao==="alterado"?" · "+esc(h.dev_nome):""}</small><div>${esc(cut(t))}</div></div>`}
+async function loadHist(did){const id=did?"dvh":"hvb";let h;try{const r=await fetch("/api/history?"+(did?"device="+encodeURIComponent(did)+"&limit=30":"limit=200"));const a=await r.json();h=a.length?a.map(x=>htxt(x,!did)).join(""):'<span class="empty">Nenhuma alteração registrada.</span>'}catch(e){h='<span class="empty">Não foi possível carregar o histórico.</span>'}
+ const el=document.getElementById(id);if(el&&(!did||devId===did))el.innerHTML=h}
+function render(){
+ document.getElementById("tabs").innerHTML=NAMES.map((n,i)=>{const c=S.floors[i].reduce((a,r)=>a+r.pcs.length,0);return`<button class="tab ${i===cur?"on":""}" data-f="${i}">${n}<small>${c}</small></button>`}).join("");
+ document.getElementById("ft").textContent=NAMES[cur]+" — "+S.floors[cur].length+" salas";
+ document.getElementById("plan").innerHTML=S.floors[cur].map(r=>`<div class="room" data-open="${r.id}"><div class="rh"><b>${esc(r.name)}</b><span>${r.pcs.length} disp.</span></div>
+ <div class="pcs">${r.pcs.map(p=>`<div class="pc ${match(p)?"hit":""} ${stOf(p)==="Desativado"?"off":""}">${stDot(p)}<div class="i">${svg(p.type)}</div><div class="w">${esc(p.worker)||"Sem nome"}</div><div class="t">${esc(p.tag)}</div></div>`).join("")||'<span class="empty">Nenhum dispositivo</span>'}</div>
+ <div class="hint">Abrir sala ⤢</div></div>`).join("");
+ const hits=[];S.floors.forEach((rs,fi)=>rs.forEach(r=>{if(q&&nrm(r.name).includes(q))hits.push(`<button data-hit="${fi}|${r.id}|">Sala: ${esc(r.name)} → ${NAMES[fi]}</button>`);r.pcs.forEach(p=>{if(match(p))hits.push(`<button data-hit="${fi}|${r.id}|${p.id}">${esc(p.worker||p.type||"Dispositivo")} · ${esc(p.tag)} → ${NAMES[fi]}, ${esc(r.name)}</button>`)})}));
+ document.getElementById("res").innerHTML=q?(hits.slice(0,30).join("")+(hits.length>30?'<span class="empty">+'+(hits.length-30)+' resultados…</span>':"")||'<span class="empty">Nada encontrado.</span>'):"";renderOv();renderDv();renderDup();renderDash();
+}
+function modal(title,fields,ok,del){
+ const m=document.getElementById("m");document.getElementById("mt").textContent=title;
+ document.getElementById("mf").innerHTML=fields.map((f,i)=>`<label>${f[0]}</label><input id="f${i}" value="${esc(f[1])}">`).join("");
+ const d=document.getElementById("md");d.style.display=del?"":"none";
+ m.style.display="flex";document.getElementById("f0").focus();
+ const close=()=>{m.style.display="none"};
+ document.getElementById("mc").onclick=close;
+ document.getElementById("mo").onclick=()=>{ok(fields.map((_,i)=>document.getElementById("f"+i).value.trim()));save();close();render()};
+ d.onclick=()=>{del();save();close();render()};
+}
+const room=id=>S.floors[cur].find(r=>r.id===id);
+document.addEventListener("click",e=>{
+ const t=e.target.closest("[data-f],[data-a],[data-p],[data-r],[data-go]");if(!t)return;
+ if(t.dataset.go){cur=+t.dataset.go;render();return}
+ if(t.dataset.f){cur=+t.dataset.f;render();return}
+ if(t.dataset.a){const r=room(t.dataset.a);modal("Novo computador — "+r.name,[["Trabalhador",""],["Código do computador",""]],v=>r.pcs.push({id:uid(),worker:v[0],tag:v[1]}));return}
+ if(t.dataset.p){const r=room(t.dataset.r),p=r.pcs.find(x=>x.id===t.dataset.p);modal("Editar computador",[["Trabalhador",p.worker],["Código do computador",p.tag]],v=>{p.worker=v[0];p.tag=v[1]},()=>{r.pcs=r.pcs.filter(x=>x!==p)});return}
+ if(t.dataset.r){const r=room(t.dataset.r);modal("Editar sala",[["Nome da sala",r.name]],v=>{if(v[0])r.name=v[0]},()=>{if(!r.pcs.length||confirm("Excluir a sala e seus computadores?"))S.floors[cur]=S.floors[cur].filter(x=>x!==r)})}
+});
+document.getElementById("addroom").onclick=()=>modal("Nova sala",[["Nome da sala",""]],v=>S.floors[cur].push({id:uid(),name:v[0]||"Nova sala",pcs:[]}));
+document.getElementById("q").oninput=e=>{q=nrm(e.target.value.trim());render()};
+document.getElementById("exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:"application/json"}));a.download="mapa-computadores.json";a.click()};
+document.getElementById("imp").onclick=()=>document.getElementById("file").click();
+document.getElementById("file").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(d.floors&&d.floors.length===8){S=d;save();render()}}catch(x){}})};
+document.getElementById("clr").onclick=()=>{S=fresh();S.floors[1][0].pcs=[];save();render()};
+const TYPES={"Computador":"🖥️","Notebook":"💻","Switch":"🔀","Roteador":"🌐","Access Point":"📶","Impressora":"🖨️","Servidor":"🗄️","Outro":"🔌"};
+const ico=p=>TYPES[p.type]||"🖥️";let openId=null;
+document.getElementById("ntype").innerHTML=Object.keys(TYPES).map(t=>`<option>${t}</option>`).join("");
+const P={
+"Computador":'<rect x="7" y="7" width="34" height="23" rx="2"/><path d="M24 30v7M15 41h18"/>',
+"Notebook":'<rect x="10" y="9" width="28" height="20" rx="2"/><path d="M4 35h40l-3 5H7z"/>',
+"Roteador":'<rect x="5" y="28" width="38" height="12" rx="3"/><path d="M13 28V12M35 28V12M17 34h.01M23 34h.01"/>',
+"Switch":'<rect x="3" y="15" width="42" height="18" rx="2"/><rect x="8" y="22" width="4" height="6"/><rect x="15" y="22" width="4" height="6"/><rect x="22" y="22" width="4" height="6"/><rect x="29" y="22" width="4" height="6"/><rect x="36" y="22" width="4" height="6"/>',
+"Access Point":'<path d="M9 20a21 21 0 0 1 30 0M15 26a13 13 0 0 1 18 0"/><rect x="10" y="33" width="28" height="7" rx="3"/>',
+"Impressora":'<rect x="13" y="6" width="22" height="11"/><rect x="5" y="17" width="38" height="17" rx="2"/><rect x="13" y="28" width="22" height="13"/>',
+"Servidor":'<rect x="8" y="6" width="32" height="11" rx="2"/><rect x="8" y="19" width="32" height="11" rx="2"/><rect x="8" y="32" width="32" height="11" rx="2"/><path d="M14 11.5h.01M14 24.5h.01M14 37.5h.01"/>',
+"Outro":'<path d="M17 5v10M31 5v10M11 15h26v8a13 13 0 0 1-26 0zM24 36v8"/>'};
+const svg=t=>`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="${["Roteador","Switch","Access Point"].includes(t)?"net":""}">${P[t]||P["Computador"]}</svg>`;
+let devId=null,editMode=false;
+const isNetDev=p=>p.type&&p.type!=="Computador"&&p.type!=="Notebook";
+function curDev(){const r=openId&&room(openId);return r?{r,p:(draft&&draft.id===devId)?draft:r.pcs.find(x=>x.id===devId)}:{}}
+const FL={host:"Nome do host",ip:"Endereço IP",anydesk:"ID Anydesk",mac:"Endereço MAC",modelo:"Modelo",serie:"Nº de série",so:"Sistema operacional",fw:"Firmware",vlan:"VLAN",notas:"Notas",obs:"Observações"};
+function viewDv(r,p){
+ const cfg=p.cfg||{},users=p.users||[],extra=(p.extra||[]).filter(x=>x.k||x.v);
+ const adId=String(cfg.anydesk||"").replace(/\s+/g,""),adBtn=/^[A-Za-z0-9@._-]+$/.test(adId)?` <a class="rb" href="anydesk:${adId}">Acessar Remotamente</a>`:"";
+ const rows=Object.keys(FL).filter(k=>cfg[k]).map(k=>[FL[k],cfg[k],k==="anydesk"?adBtn:""]).concat(extra.map(x=>[x.k||"—",x.v||"—"]));
+ const idr=[["Nome / trabalhador",p.worker],["Endereço IP",p.tag],["Tipo",p.type||"Computador"],["Status",stOf(p)],["Setor/Sala",p.setor],["Sala",r.name],["Andar",NAMES[cur]]].filter(x=>x[1]);
+ const dl=a=>`<div class="info">${a.map(([k,v,x])=>`<div class="ir"><span>${esc(k)}</span><b>${esc(v)}${x||""}</b></div>`).join("")}</div>`;
+ document.getElementById("dvb").innerHTML=`<div class="dh">${svg(p.type)}<div><b style="font-size:18px">${esc(p.worker)||"Sem nome"}</b><div class="sub" style="margin:0">${esc(p.type||"Computador")} · ${esc(r.name)} · ${NAMES[cur]}</div></div></div>
+<div id="dupw">${dupWarn(p)}</div>
+<div class="card"><div class="sec">Identificação</div>${dl(idr)}</div>
+<div class="card"><div class="sec">Usuários</div>${users.length?users.map(u=>`<span class="chip" style="padding:4px 12px">${esc(u)}</span>`).join(""):'<span class="empty">Nenhum usuário cadastrado.</span>'}</div>
+<div class="card"><div class="sec">Configurações</div>${rows.length?dl(rows):'<span class="empty">Nenhuma configuração cadastrada.</span>'}</div>
+<div class="card"><div class="sec">Ocorrências (${(p.occ||[]).length})</div>${(p.occ||[]).length?(p.occ||[]).slice().reverse().map(o=>`<div class="oc"><div><span class="tag">${esc(o.situacao||"Aberta")}</span> <small>${fmt(o.ts)} · ${esc(o.by||"")}</small></div><div><b>Problema:</b> ${esc(o.problema)}</div>${o.solucao?`<div><b>Solução:</b> ${esc(o.solucao)}</div>`:""}</div>`).join(""):'<span class="empty">Nenhuma ocorrência registrada.</span>'}</div>
+<div class="card"><div class="sec">Histórico de alterações</div><div id="dvh"><span class="empty">Carregando…</span></div></div>`;loadHist(p.id);
+}
+function renderDv(){
+ if(draft&&devId!==draft.id)draft=null;const dv=document.getElementById("dv"),{r,p}=curDev();
+ if(!p){devId=null;dv.hidden=true;return}
+ dv.hidden=false;document.getElementById("dvdel").hidden=!editMode||!!draft;document.getElementById("dvedit").textContent=editMode?(draft?"Salvar dispositivo":"Concluir edição"):"Editar informações";document.getElementById("dvx").textContent=draft?"← Cancelar":"← Voltar à sala";if(!editMode){viewDv(r,p);return}p.cfg=p.cfg||{};p.users=p.users||[];p.extra=p.extra||[];p.occ=p.occ||[];
+ const F=isNetDev(p)?[["host","Nome do host"],["ip","Endereço IP"],["mac","Endereço MAC"],["modelo","Modelo"],["serie","Nº de série"],["fw","Firmware"],["vlan","VLAN"],["notas","Notas"],["obs","Observações"]]:[["host","Nome do host"],["ip","Endereço IP"],["mac","Endereço MAC"],["modelo","Modelo"],["serie","Nº de série"],["so","Sistema operacional"],["notas","Notas"],["obs","Observações"]];
+ document.getElementById("dvb").innerHTML=`<div class="dh">${svg(p.type)}<div><b style="font-size:18px">${esc(p.worker)||"Sem nome"}</b><div class="sub" style="margin:0">${esc(p.type||"Computador")} · ${esc(r.name)} · ${NAMES[cur]}</div></div></div>
+<div id="dupw">${dupWarn(p)}</div>
+<div class="card"><div class="sec">Identificação</div><div class="fg"><div><label>Nome / trabalhador</label><input data-nm value="${esc(p.worker)}"></div><div><label>Código</label><input data-cd value="${esc(p.tag)}"></div><div><label>Tipo</label><select data-ty>${Object.keys(TYPES).map(t=>`<option ${t===(p.type||"Computador")?"selected":""}>${t}</option>`).join("")}</select></div><div><label>Status</label><select data-st>${Object.keys(ST).map(t=>`<option ${t===stOf(p)?"selected":""}>${t}</option>`).join("")}</select></div><div><label>Setor/Sala</label><input data-sr list="setores" value="${esc(p.setor)}"></div></div></div>
+<div class="card"><div class="sec">Usuários</div><div>${p.users.map((u,i)=>`<span class="chip">${esc(u)}<button data-udel="${i}">✕</button></span>`).join("")||'<span class="empty">Nenhum usuário cadastrado.</span>'}</div><div class="addrow" style="margin:8px 0 0;padding:0;border:0;background:none"><input id="unew" placeholder="Nome do usuário"><button class="p" data-uadd>+ Adicionar usuário</button></div></div>
+<div class="card"><div class="sec">Configurações</div><div style="margin-bottom:10px"><button data-apl>Aplicar Preferências Anteriores</button> <span id="aplmsg" class="empty"></span></div><div class="fg">${F.slice(0,2).concat([["anydesk","ID Anydesk"]],F.slice(2)).map(([k,l])=>`<div><label>${l}</label><input data-cfg="${k}" value="${esc(p.cfg[k])}"></div>`).join("")}</div>
+<div class="sec" style="margin-top:16px">Configurações adicionais</div>${p.extra.map((x,i)=>`<div class="kv"><input data-xk="${i}" placeholder="Nome" value="${esc(x.k)}"><input data-xv="${i}" placeholder="Valor" value="${esc(x.v)}"><button data-xdel="${i}">✕</button></div>`).join("")}<button data-xadd>+ Adicionar configuração</button></div>
+<div class="card"><div class="sec">Ocorrências</div><div class="fg"><div><label>Problema</label><input id="onew"></div><div><label>Solução aplicada (opcional)</label><input id="osol"></div><div><label>Situação</label><select id="osit"><option>Aberta</option><option>Resolvida</option></select></div></div><button class="p" data-oadd style="margin:10px 0">+ Registrar ocorrência</button>${p.occ.slice().reverse().map(o=>`<div class="oc"><div><small>${fmt(o.ts)} · ${esc(o.by||"")}</small> <select data-osit="${o.id}">${["Aberta","Resolvida"].map(s=>`<option ${s===(o.situacao||"Aberta")?"selected":""}>${s}</option>`).join("")}</select> <button data-odel="${o.id}">✕</button></div><div>${esc(o.problema)}</div><input data-osol="${o.id}" placeholder="Solução aplicada" value="${esc(o.solucao)}"></div>`).join("")}</div>`;
+}
+const dvb=document.getElementById("dvb");
+dvb.addEventListener("input",e=>{const {p}=curDev();if(!p)return;const t=e.target,d=t.dataset;
+ if("nm" in d)p.worker=t.value;else if("cd" in d)p.tag=t.value;else if("sr" in d)p.setor=t.value;else if(d.cfg)p.cfg[d.cfg]=t.value;else if(d.xk!==undefined)p.extra[+d.xk].k=t.value;else if(d.xv!==undefined)p.extra[+d.xv].v=t.value;else return;save();const w=document.getElementById("dupw");if(w)w.innerHTML=dupWarn(p);renderDup()});
+dvb.addEventListener("change",e=>{if(e.target.dataset.ty!==undefined){const {p}=curDev();if(p){p.type=e.target.value;save();renderDv()}}});
+dvb.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="unew")dvb.querySelector("[data-uadd]").click()});
+dvb.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const {p}=curDev(),d=b.dataset;if(!p)return;
+ if(d.uadd!==undefined){const v=document.getElementById("unew").value.trim();if(v){p.users.push(v);save();renderDv()}}
+ else if(d.udel!==undefined){p.users.splice(+d.udel,1);save();renderDv()}
+ else if(d.xadd!==undefined){p.extra.push({k:"",v:""});save();renderDv()}
+ else if(d.xdel!==undefined){p.extra.splice(+d.xdel,1);save();renderDv()}});
+dvb.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const {p}=curDev();if(!p)return;const d=b.dataset;
+ if(d.oadd!==undefined){const pr=document.getElementById("onew").value.trim();if(!pr)return;p.occ.push({id:uid(),ts:new Date().toISOString(),by:ME,problema:pr,solucao:document.getElementById("osol").value.trim(),situacao:document.getElementById("osit").value});save();renderDv()}
+ else if(d.odel!==undefined){p.occ=p.occ.filter(o=>o.id!==d.odel);save();renderDv()}
+ else if(d.apl!==undefined){applyPrev(p)}});
+dvb.addEventListener("input",e=>{const {p}=curDev(),id=e.target.dataset.osol;if(p&&id){const o=p.occ.find(x=>x.id===id);if(o){o.solucao=e.target.value;save()}}});
+dvb.addEventListener("change",e=>{const {p}=curDev(),d=e.target.dataset;if(!p)return;
+ if(d.st!==undefined){p.status=e.target.value;save();renderDv()}
+ else if(d.osit){const o=p.occ.find(x=>x.id===d.osit);if(o){o.situacao=e.target.value;save();renderDv()}}});
+document.getElementById("hist").onclick=()=>{document.getElementById("hv").hidden=false;document.getElementById("hvb").innerHTML='<span class="empty">Carregando…</span>';loadHist(null)};
+document.getElementById("hvx").onclick=()=>{document.getElementById("hv").hidden=true};
+document.getElementById("dvedit").onclick=()=>{if(draft){if(!(draft.worker||draft.tag)){document.getElementById("aplmsg").textContent="Preencha pelo menos o nome ou o código.";return}const {r}=curDev();r.pcs.push(draft);draft=null;devId=null;save();render();return}editMode=!editMode;renderDv();document.getElementById("dv").scrollTop=0};
+document.getElementById("dvx").onclick=()=>{devId=null;render()};
+document.getElementById("dvdel").onclick=()=>{const {r,p}=curDev();if(r&&p){r.pcs=r.pcs.filter(x=>x!==p);devId=null;save();render()}};
+let view="dash",rq="",lastOpen=null,draft=null;
+function renderDash(){
+ document.querySelectorAll("#nav [data-view]").forEach(b=>b.classList.toggle("on",b.dataset.view===view));
+ const dash=document.getElementById("dash");dash.style.display=view==="dash"?"":"none";
+ document.getElementById("mapv").style.display=view==="dash"?"none":"";document.getElementById("dupb").style.display=view==="dash"?"none":"";
+ if(view!=="dash")return;
+ const all=[];S.floors.forEach((rs,fi)=>rs.forEach(r=>r.pcs.forEach(p=>all.push({fi,r,p}))));
+ const rooms=S.floors.reduce((a,rs)=>a+rs.length,0),cnt=k=>all.filter(x=>stOf(x.p)===k).length;
+ const occ=[];all.forEach(x=>(x.p.occ||[]).forEach(o=>{if(o.situacao!=="Resolvida")occ.push({...x,o})}));occ.sort((a,b)=>String(b.o.ts).localeCompare(String(a.o.ts)));
+ const dp=dups(),man=all.filter(x=>stOf(x.p)==="Em manutenção");
+ const perF=S.floors.map((rs,i)=>[i,NAMES[i],rs.reduce((a,r)=>a+r.pcs.length,0)]),mxF=Math.max(1,...perF.map(x=>x[2]));
+ const types={};all.forEach(x=>{const t=x.p.type||"Computador";types[t]=(types[t]||0)+1});
+ const tr=Object.entries(types).sort((a,b)=>b[1]-a[1]),mxT=Math.max(1,...tr.map(x=>x[1]));
+ const nm=x=>esc(x.p.worker||x.p.type||"Dispositivo")+" ("+esc(x.r.name)+", "+NAMES[x.fi]+")",hit=x=>`${x.fi}|${x.r.id}|${x.p.id}`;
+ const al=(c,t,h)=>`<button class="al" data-hit="${h}"><i class="dot" style="background:${c}"></i><span>${t}</span></button>`;
+ const items=[...dp.slice(0,5).map(([ip,a])=>al("#9C4545",`IP duplicado ${esc(ip)}: ${a.map(dnm).join(" e ")}`,hit(a[0]))),...occ.slice(0,8).map(x=>al("#D9962B",`${esc(x.o.problema)} — ${nm(x)}`,hit(x))),...man.slice(0,6).map(x=>al(ST["Em manutenção"],`Em manutenção: ${nm(x)}`,hit(x)))];
+ const bar=(n,v,mx,t)=>`<${t?"button":"div"} class="br" ${t?`data-floor="${t[0]}"`:""}><span>${n}</span><div class="t"><i style="width:${Math.round(v/mx*100)}%"></i></div><em>${v}</em></${t?"button":"div"}>`;
+ dash.innerHTML=`<div class="bar" style="justify-content:space-between"><b style="font-size:18px">Painel</b><a class="rb" style="margin:0" href="http://10.78.4.7/zabbix/zabbix.php?action=dashboard.view&amp;dashboardid=1" target="_blank" rel="noopener">Acessar Zabbix</a></div>
+<div class="kpis">${[["Dispositivos",all.length],["Salas",rooms],["Em manutenção",man.length,1],["Ocorrências abertas",occ.length,1],["IPs duplicados",dp.length,1]].map(k=>`<div class="kpi"><span>${k[0]}</span><b style="${k[2]&&k[1]?"color:var(--acc)":""}">${k[1]}</b></div>`).join("")}</div>
+<div class="dg"><div class="card avisos"><div class="sec">Avisos${items.length?` <span class="tag">${items.length}</span>`:""}</div>${items.join("")||'<span class="empty">Tudo em ordem: nenhum aviso no momento.</span>'}<div class="empty" style="margin-top:8px">${cnt("Em estoque")} em estoque · ${cnt("Desativado")} desativados</div></div>
+<div class="col"><div class="card"><div class="sec">Status dos equipamentos</div><div style="display:flex;height:14px;border-radius:7px;overflow:hidden;margin:4px 0 8px;background:var(--line)">${Object.keys(ST).map(k=>`<div style="flex:${cnt(k)};background:${ST[k]}"></div>`).join("")}</div><div class="empty">${cnt("Ativo")} ativos · ${cnt("Em manutenção")} em manutenção · ${cnt("Em estoque")} em estoque · ${cnt("Desativado")} desativados</div></div>
+<div class="card"><div class="sec">Últimas alterações</div><div id="dhl"><span class="empty">Carregando…</span></div></div></div></div>
+<div class="dg"><div class="card"><div class="sec">Dispositivos por andar (clique para abrir)</div>${perF.slice().reverse().map(x=>bar(x[1],x[2],mxF,x)).join("")}</div>
+<div class="card"><div class="sec">Dispositivos por tipo</div>${tr.map(x=>bar(x[0],x[1],mxT)).join("")||'<span class="empty">Nenhum dispositivo cadastrado.</span>'}</div></div>`;
+ loadDashHist()}
+async function loadDashHist(){let h;try{const a=await(await fetch("/api/history?limit=6")).json();h=a.length?a.map(x=>htxt(x,true)).join(""):'<span class="empty">Nenhuma alteração registrada.</span>'}catch(e){h='<span class="empty">Histórico indisponível.</span>'}const el=document.getElementById("dhl");if(el&&view==="dash")el.innerHTML=h}
+function renderOv(){
+ const ov=document.getElementById("ov"),r=openId&&room(openId);
+ if(!r){openId=null;ov.hidden=true;return}
+ ov.hidden=false;if(openId!==lastOpen){lastOpen=openId;rq="";document.getElementById("nsearch").value=""}document.getElementById("setores").innerHTML=[...new Set(S.floors.flat().flatMap(x=>x.pcs).map(p=>p.setor).filter(Boolean))].map(x=>`<option value="${esc(x)}">`).join("");
+ document.getElementById("ovt").textContent=r.name;
+ document.getElementById("ovs").textContent=NAMES[cur]+" · "+r.pcs.length+" dispositivo(s)";
+ document.getElementById("ovren").dataset.r=r.id;
+ const row=p=>`<div class="dev ${stOf(p)==="Desativado"?"off":""}"><div class="tx" data-dev="${p.id}">${svg(p.type)}<b>${esc(p.worker)||"Sem nome"}</b><span>${esc(p.type||"Computador")}${p.tag?" · "+esc(p.tag):""}</span><div class="st"><i class="dot" style="background:${ST[stOf(p)]}"></i>${stOf(p)}</div>${nOpen(p)?`<div class="st" style="color:#9C4545">${nOpen(p)} ocorrência(s) aberta(s)</div>`:""}</div><button data-edit="${p.id}">Editar</button> <button data-del="${p.id}">Remover</button></div>`;
+ const isPc=p=>!p.type||p.type==="Computador"||p.type==="Notebook";const L=r.pcs.filter(p=>!rq||nrm([p.worker,p.tag,(p.cfg||{}).host,(p.cfg||{}).anydesk,...(p.users||[])].join(" ")).includes(rq));const pcs=L.filter(isPc),net=L.filter(p=>!isPc(p));
+ document.getElementById("ovl").innerHTML=`<div class="sec">Computadores e notebooks (${pcs.length})</div>${pcs.length?'<div class="grid">'+pcs.map(row).join("")+'</div>':'<span class="empty">Nenhum computador.</span>'}<div class="sec">Dispositivos de rede e outros (${net.length})</div>${net.length?'<div class="grid">'+net.map(row).join("")+'</div>':'<span class="empty">Nenhum dispositivo.</span>'}`;
+}
+function addDev(){const r=room(openId);if(!r)return;draft={id:uid(),worker:"",tag:"",type:document.getElementById("ntype").value,cfg:{},users:[],extra:[],occ:[]};devId=draft.id;editMode=true;renderDv();document.getElementById("dv").scrollTop=0}
+function applyPrev(p){const {r}=curDev(),g=document.getElementById("aplmsg"),s=(p.setor||"").trim();
+ const c=r.pcs.slice().reverse().find(x=>x!==p&&((x.cfg||{}).notas||(x.cfg||{}).obs)&&(!s||(x.setor||"")===s));
+ if(!c){g.textContent="Nenhum dispositivo anterior"+(s?" do setor/sala “"+s+"”":"")+" nesta sala com Notas ou Observações.";return}
+ p.cfg=p.cfg||{};p.cfg.notas=(c.cfg||{}).notas||"";p.cfg.obs=(c.cfg||{}).obs||"";if(!s&&c.setor)p.setor=c.setor;
+ save();renderDv();document.getElementById("aplmsg").textContent="Preenchido com os dados de "+(c.worker||c.tag||c.type)+"."}
+document.getElementById("nadd").onclick=addDev;
+document.getElementById("nsearch").addEventListener("input",e=>{rq=nrm(e.target.value.trim());renderOv()});
+document.getElementById("ovx").onclick=()=>{openId=null;render()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&openId&&document.getElementById("m").style.display!=="flex"){if(devId)devId=null;else openId=null;render()}});
+document.addEventListener("click",e=>{
+ const nv=e.target.closest("[data-view]");if(nv){view=nv.dataset.view;openId=null;devId=null;render();return}
+ const fl=e.target.closest("[data-floor]");if(fl){cur=+fl.dataset.floor;view="map";render();return}
+ const h=e.target.closest("[data-hit]");if(h){const [f,rid,did]=h.dataset.hit.split("|");cur=+f;view="map";openId=rid;devId=did||null;editMode=false;render();return}
+ const o=e.target.closest("[data-open]");if(o){openId=o.dataset.open;render();return}
+ const v=e.target.closest("[data-dev]");if(v){devId=v.dataset.dev;editMode=false;render();document.getElementById("dv").scrollTop=0;return}
+ const ed=e.target.closest("[data-edit]");if(ed){devId=ed.dataset.edit;editMode=true;render();document.getElementById("dv").scrollTop=0;return}
+ const d=e.target.closest("[data-del]");if(d){const r=room(openId);if(r){r.pcs=r.pcs.filter(p=>p.id!==d.dataset.del);save();render()}}
+});
+load().then(render);
+document.getElementById('sair').onclick=()=>fetch('/api/logout',{method:'POST'}).then(()=>location.href='/login.html');
+</script></body></html>

@@ -1,0 +1,12 @@
+[Unit]
+Description=Mapa de Computadores
+After=network.target
+
+[Service]
+User=mapa
+WorkingDirectory=/opt/mapa
+ExecStart=/opt/mapa/venv/bin/gunicorn -w 1 --threads 4 -b 0.0.0.0:8080 app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
